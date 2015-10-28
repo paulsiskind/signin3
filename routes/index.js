@@ -23,6 +23,7 @@ router.get('/signout', function(req, res, next){
 
 router.get('/dashboard', function(req, res, next){
   var username = req.session.username;
+  console.log(username)
   res.render('show', {username: username});
 });
 
@@ -34,6 +35,20 @@ router.post('/', function(req, res, next){
   }
   if(req.body.password.length == 0){
     errors.push('Password Cannot be blank!');
+  }
+  if(req.body.password.length < 8){
+    errors.push('Password Must be atleast 8 characters!')
+  }
+  re = /[0-9]/;
+  if(!re.test(req.body.password)){
+    errors.push('Password Must Contain at least One Number!')
+  }
+  // de = /[@#$%^&+=]/;
+  // if(!de.text(req.body.password)){
+  //   errors.push('Password Must Contain at least one Special Character!')
+  // }
+  if(req.body.password !== req.body.confirmation){
+    errors.push('Password does not match confirmation')
   }
   if(errors.length){
     res.render('index', {errors:errors})
@@ -60,7 +75,7 @@ router.post('/signin', function(req, res, next){
     errors.push('Email Cannot be Blank!')
   }
   if(req.body.password.length == 0){
-    errors.push('password Cannot be Blank')
+    errors.push('Password Cannot be Blank!')
   }
   if(errors.length){
     res.render('signin', {errors: errors})
